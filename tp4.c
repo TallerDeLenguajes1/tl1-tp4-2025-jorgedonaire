@@ -2,28 +2,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Tarea
+struct Tarea
 {
     int TareaID; //numero autoincremental comenzando en 1000
     char *Descripcion;
     int Duracion; //entre 10 y 100
-}Tarea;
+}typedef Tarea;
 
-typedef struct Nodo
+typedef struct Nodo Nodo;
+struct Nodo
 {
     Tarea T;
     Nodo *Siguiente;
-}Nodo;
+};
 
 Nodo *CrearListaVacia();
 Nodo *CrearNodo();
+void InsertarNodo(Nodo **Start, Nodo *NodoInsertado);
 
 int main()
 {
-    Nodo *Start;
-    Start = CrearListaVacia();
-    
+    Nodo *TareasPendientes = CrearListaVacia();
+    int bandera;
+    int i = 0;
 
+    do
+    {
+        Nodo * NuevaTarea = CrearNodo(1000 + i);
+        InsertarNodo(&TareasPendientes, NuevaTarea);
+        i++;
+        printf("1. Ingresar nueva tarea. \n");
+        printf("0. Finalizar carga.\n");
+        printf("Ingrese una opcion: ");
+        scanf("%d", &bandera);
+    } while (bandera != 0);
+    
     return 0;
 }
 
@@ -36,6 +49,7 @@ Nodo *CrearNodo(int idGenerado){
     char *Buff;
     char *DescripcionIngresada;
     Buff = (char *) malloc(200*sizeof(char));
+    fflush(stdin);
     printf("Ingrese la descripcion de la tarea: ");
     gets(Buff);
 
@@ -50,4 +64,12 @@ Nodo *CrearNodo(int idGenerado){
 
     NuevoNodo->T.Duracion = DuracionIngresada;
     NuevoNodo->T.TareaID = idGenerado;
+
+    NuevoNodo->Siguiente = NULL;
+    return NuevoNodo;
+}
+
+void InsertarNodo(Nodo **Start, Nodo *NodoInsertado){
+    NodoInsertado->Siguiente = *Start; //el nodo insertado apunto a donde apunta el comienzo de la lista, osea el 1er nodo
+    *Start = NodoInsertado; // el comienzo de la lista apunto al nodo insertado
 }
