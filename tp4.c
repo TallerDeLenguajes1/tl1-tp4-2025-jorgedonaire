@@ -22,6 +22,7 @@ void InsertarNodo(Nodo **Start, Nodo *NodoInsertado);
 // void EliminarNodo2(Nodo *nodoEliminado);
 void *EliminarNodoPorID(Nodo **Start, int id);
 Nodo * extraerNodoDeLista(Nodo **Start, int id);
+void MostrarListas(Nodo **Start);
 
 int main()
 {
@@ -52,6 +53,14 @@ int main()
     scanf("%d",&idIngresado);
     InsertarNodo(&TareasRealizadas,extraerNodoDeLista(&TareasPendientes,idIngresado));
 
+
+    printf("********** TAREAS PENDIENTES ************\n");
+    MostrarListas(&TareasPendientes);
+    printf("\n");
+    printf("********** TAREAS REALIZADAS ************\n");
+    MostrarListas(&TareasRealizadas);
+    printf("\n");
+    
     return 0;
 }
 
@@ -128,6 +137,19 @@ Nodo * extraerNodoDeLista(Nodo **Start, int id){
     return nodoExtraido;
 }
 
+void MostrarListas(Nodo **Start){
+    Nodo *aux = *Start;
+    while (aux != NULL)
+    {
+        printf("\n");
+        printf("Tarea ID: %d\n", aux->T.TareaID);
+        printf("Descripcion: %s\n", aux->T.Descripcion);
+        printf("Duracion: %d\n", aux->T.Duracion);
+        printf("-------");
+        aux = aux->Siguiente;
+    }
+    
+}
 // void EliminarNodo2(Nodo *nodoEliminado){
 //     if (nodoEliminado)
 //     {
