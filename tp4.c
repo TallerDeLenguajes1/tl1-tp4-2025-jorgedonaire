@@ -17,14 +17,22 @@ struct Nodo
 };
 
 Nodo *CrearListaVacia();
-Nodo *CrearNodo();
+Nodo *CrearNodo(int idGenerado);
 void InsertarNodo(Nodo **Start, Nodo *NodoInsertado);
+// void EliminarNodo2(Nodo *nodoEliminado);
+void *EliminarNodoPorID(Nodo **Start, int id);
+Nodo * extraerNodoDeLista(Nodo **Start, int id);
 
 int main()
 {
     Nodo *TareasPendientes = CrearListaVacia();
-    int bandera;
+    Nodo *TareasRealizadas = CrearListaVacia();
+    int bandera, idIngresado;
     int i = 0;
+
+    printf("***** SISTEMA *****\n");
+    printf("\n");
+    printf("***** Carga de Tareas *****\n");
 
     do
     {
@@ -37,6 +45,13 @@ int main()
         scanf("%d", &bandera);
     } while (bandera != 0);
     
+
+
+    printf("***** MARCAR TAREAS COMO REALIZADAS *****\n");
+    printf("Ingrese el ID de la tarea que desea marcar como realizada: ");
+    scanf("%d",&idIngresado);
+    InsertarNodo(&TareasRealizadas,extraerNodoDeLista(&TareasPendientes,idIngresado));
+
     return 0;
 }
 
@@ -55,7 +70,7 @@ Nodo *CrearNodo(int idGenerado){
 
     DescripcionIngresada = (char *) malloc(strlen(Buff)+1 * sizeof(char));
     strcpy(DescripcionIngresada,Buff);
-
+    free(Buff);
     NuevoNodo->T.Descripcion = DescripcionIngresada;
 
     int DuracionIngresada;
@@ -67,9 +82,55 @@ Nodo *CrearNodo(int idGenerado){
 
     NuevoNodo->Siguiente = NULL;
     return NuevoNodo;
+    free(DescripcionIngresada);
 }
 
 void InsertarNodo(Nodo **Start, Nodo *NodoInsertado){
     NodoInsertado->Siguiente = *Start; //el nodo insertado apunto a donde apunta el comienzo de la lista, osea el 1er nodo
     *Start = NodoInsertado; // el comienzo de la lista apunto al nodo insertado
 }
+
+void *EliminarNodoPorID(Nodo **Start, int id){ //inicio de la lista, puntero doble
+    Nodo ** aux = Start;
+    while (aux != NULL && (*aux)->T.TareaID != id)
+    {
+        aux = &(*aux)->Siguiente;
+    }
+
+    if (*aux)
+    {
+        Nodo * temp = aux;
+        *aux = (*aux)->Siguiente;
+    }
+    return NULL;
+}
+
+Nodo * extraerNodoDeLista(Nodo **Start, int id){
+    Nodo *aux = *Start;
+    Nodo *nodoExtraido = (Nodo *) malloc (sizeof(Nodo));
+
+    while (aux && aux->T.TareaID != id)
+    {
+        aux = aux->Siguiente;
+    }
+
+    if (aux == NULL)
+    {
+        printf("No se encontro la tarea con el id solicitado");
+        return NULL;
+    }
+    nodoExtraido->T.Duracion = aux->T.Duracion;
+    nodoExtraido->T.TareaID = aux->T.TareaID;
+    nodoExtraido->T.Descripcion = (char *)malloc (strlen(aux->T.Descripcion) + 1 *sizeof(char *));
+    strcpy(nodoExtraido->T.Descripcion, aux->T.Descripcion);
+
+    EliminarNodoPorID(Start,id);
+    return nodoExtraido;
+}
+
+// void EliminarNodo2(Nodo *nodoEliminado){
+//     if (nodoEliminado)
+//     {
+//         free(nodoEliminado);
+//     }
+// }
